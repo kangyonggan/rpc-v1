@@ -5,7 +5,7 @@ RPC（Remote Procedure Call）远程过程调用。本例为简易版rpc框架�
 https://github.com/kangyonggan/rpc.git
 
 ## 架构
-![](https://ws2.sinaimg.cn/large/006tNc79ly1g04tkewr36j30im078aa2.jpg)
+![架构](https://ws2.sinaimg.cn/large/006tNc79ly1g04tkewr36j30im078aa2.jpg)
 
 1. Providor服务端启动，将服务注册到Register注册中心
 2. Consumer客户端启动，将引用注册到Register注册中心，并订阅引用服务变化和降级服务变化
@@ -46,7 +46,6 @@ https://github.com/kangyonggan/rpc.git
 - 泛化网关
 - schema配置手册
 - And So On
-
 
 > 参考资料：[http://www.recorddrip.com/dokuwiki/doku.php?id=%E5%88%86%E4%BA%AB:%E6%8A%80%E6%9C%AF:gxxrpc:gxxrpc%E4%BB%8B%E7%BB%8D%E6%96%87%E6%A1%A3](http://www.recorddrip.com/dokuwiki/doku.php?id=%E5%88%86%E4%BA%AB:%E6%8A%80%E6%9C%AF:gxxrpc:gxxrpc%E4%BB%8B%E7%BB%8D%E6%96%87%E6%A1%A3)
 
