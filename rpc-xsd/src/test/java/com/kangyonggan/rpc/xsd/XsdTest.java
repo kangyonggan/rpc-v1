@@ -1,8 +1,11 @@
 package com.kangyonggan.rpc.xsd;
 
-import com.kangyonggan.rpc.xsd.model.Application;
+import com.kangyonggan.rpc.xsd.pojo.Application;
+import com.kangyonggan.rpc.xsd.pojo.Server;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 
 /**
  * @author kangyonggan
@@ -10,13 +13,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class XsdTest {
 
+    Logger logger = Logger.getLogger(XsdTest.class);
+
     @Test
     public void testParse() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-xsd.xml");
 
         Application application = (Application) context.getBean("application");
-        System.out.println(application.getId());
-        System.out.println(application.getName());
+        logger.info(application);
+
+        Server server = (Server) context.getBean("server");
+        logger.info(server);
     }
 
 }
