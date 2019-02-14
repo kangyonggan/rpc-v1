@@ -7,8 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
-
 
 /**
  * @author kangyonggan
@@ -32,26 +30,6 @@ public class XsdTest {
     public void testParse() {
         Application application = (Application) context.getBean(RpcPojo.application.name());
         logger.info(application);
-    }
-
-    /**
-     * 启动服务端
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testStartServer() throws IOException {
-        System.in.read();
-    }
-
-    /**
-     * 发布服务到注册中心
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testRegister() throws IOException {
-        System.in.read();
     }
 
 }
