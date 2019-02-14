@@ -13,6 +13,6 @@ public interface MathService {
      * @param y
      * @return
      */
-    int add(int x, int y);
+    Integer add(int x, int y);
 
 }

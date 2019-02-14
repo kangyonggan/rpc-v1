@@ -8,7 +8,7 @@ import com.kangyonggan.rpc.service.MathService;
  */
 public class MathServiceImpl implements MathService {
 
-    public int add(int x, int y) {
+    public Integer add(int x, int y) {
         return x + y;
     }
 }

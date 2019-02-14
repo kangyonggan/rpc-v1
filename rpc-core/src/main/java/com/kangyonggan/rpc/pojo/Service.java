@@ -9,6 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
 /**
@@ -16,7 +17,7 @@ import java.net.InetAddress;
  * @since 2019-02-13
  */
 @Data
-public class Service implements InitializingBean, ApplicationContextAware {
+public class Service implements InitializingBean, ApplicationContextAware, Serializable {
 
     private Logger logger = Logger.getLogger(Service.class);
 
