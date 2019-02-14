@@ -21,6 +21,6 @@ public class Server implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         // 启动服务
-        new RpcServer(port);
+        new RpcServer(port).start();
     }
 }

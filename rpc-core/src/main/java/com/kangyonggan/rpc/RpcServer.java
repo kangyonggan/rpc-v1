@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  * @author kangyonggan
  * @since 2019-02-14
  */
-public class RpcServer {
+public class RpcServer extends Thread {
 
     private Logger logger = Logger.getLogger(RpcServer.class);
 
@@ -23,10 +23,10 @@ public class RpcServer {
 
     public RpcServer(int port) {
         this.port = port;
-        run();
     }
 
-    private void run() {
+    @Override
+    public void run() {
         logger.info("RPC服务端正在启动...");
 
         // 接收客户端的链接

@@ -24,10 +24,16 @@ public final class RegisterUtils {
 
         if (RegisterType.zookeeper.name().equals(register.getType())) {
             // zookeeper
-            //创建[永久保留，不删除]节点
-//            ZookeeperClient.getInstance().createOrUpdateNodePersistent(basePath, null);
-            //创建临时节点
-//            ZookeeperClient.getInstance().createOrUpdateNode(path, baseService);
+            String basePath = "/rpc/" + service.getName() + "/provider";
+            String path = basePath + "/" + service.getIp() + "_" + service.getPort();
+
+            ZookeeperClient client = ZookeeperClient.getInstance(register.getIp(), register.getPort());
+
+            // 应用（路径）永久保存
+            client.createPath(basePath);
+
+            // 服务(数据)不永久保存，当与zookeeper断开连接20s左右自动删除
+            client.saveNode(path, service);
         }
 
     }
