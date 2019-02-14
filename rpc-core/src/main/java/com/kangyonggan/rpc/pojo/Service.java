@@ -1,4 +1,4 @@
-package com.kangyonggan.rpc.xsd.pojo;
+package com.kangyonggan.rpc.pojo;
 
 import lombok.Data;
 
