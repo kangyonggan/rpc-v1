@@ -1,8 +1,9 @@
 package com.kangyonggan.rpc;
 
+import com.kangyonggan.rpc.constants.RpcPojo;
 import com.kangyonggan.rpc.pojo.Application;
-import com.kangyonggan.rpc.pojo.Server;
 import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,31 +16,41 @@ import java.io.IOException;
  */
 public class XsdTest {
 
-    Logger logger = Logger.getLogger(XsdTest.class);
+    private Logger logger = Logger.getLogger(XsdTest.class);
 
-    /**
-     * 测试自定义的xml标签是否能解析
-     */
-    @Test
-    public void testParse() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-xsd.xml");
+    private ClassPathXmlApplicationContext context;
 
-        Application application = (Application) context.getBean("application");
-        logger.info(application);
-
-        Server server = (Server) context.getBean("server");
-        logger.info(server);
+    @Before
+    public void before() {
+        context = new ClassPathXmlApplicationContext("test-xsd.xml");
     }
 
     /**
-     * 测试启动服务端
+     * 解析自定义的xml标签
+     */
+    @Test
+    public void testParse() {
+        Application application = (Application) context.getBean(RpcPojo.application.name());
+        logger.info(application);
+    }
+
+    /**
+     * 启动服务端
      *
      * @throws IOException
      */
     @Test
     public void testStartServer() throws IOException {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-xsd.xml");
+        System.in.read();
+    }
 
+    /**
+     * 发布服务到注册中心
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testRegister() throws IOException {
         System.in.read();
     }
 
