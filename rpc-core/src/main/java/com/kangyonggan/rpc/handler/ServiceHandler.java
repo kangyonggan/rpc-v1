@@ -22,6 +22,6 @@ public class ServiceHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return new RpcClient(refrence).send();
+        return new RpcClient(refrence).send(method, args);
     }
 }

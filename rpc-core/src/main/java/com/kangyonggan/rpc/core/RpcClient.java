@@ -1,7 +1,11 @@
 package com.kangyonggan.rpc.core;
 
+import com.kangyonggan.rpc.constants.RpcPojo;
 import com.kangyonggan.rpc.handler.RpcClientHandler;
+import com.kangyonggan.rpc.pojo.Application;
 import com.kangyonggan.rpc.pojo.Refrence;
+import com.kangyonggan.rpc.pojo.Service;
+import com.kangyonggan.rpc.util.SpringUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -15,6 +19,9 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -66,24 +73,55 @@ public class RpcClient {
         });
 
         try {
-            channelFuture = bootstrap.connect("127.0.0.1", 9203).sync();
+            // 负载均衡
+            Service service = getBalanceService(refrence);
+            channelFuture = bootstrap.connect(service.getIp(), service.getPort()).sync();
 
-            logger.info("连接远程服务端成功:" + refrence);
+            logger.info("连接远程服务端成功:" + service);
         } catch (Exception e) {
             logger.error("连接远程服务端异常", e);
         }
     }
 
     /**
+     * 负载均衡
+     *
+     * @param refrence
+     * @return
+     */
+    private Service getBalanceService(Refrence refrence) {
+        if (refrence.getServices().size() == 0) {
+            throw new RuntimeException("没有可用的服务");
+        }
+
+        // 暂时只实现随机算法
+        int random = new Random().nextInt(refrence.getServices().size());
+        return refrence.getServices().get(random);
+    }
+
+    /**
      * 发送消息
      *
+     * @param method
+     * @param args
      * @return
      * @throws Exception
      */
-    public Object send() throws Exception {
-        // 请求参数
+    public Object send(Method method, Object[] args) throws Exception {
+        // 准备请求参数
         RpcRequest request = new RpcRequest();
+
+        // 通用参数
         request.setUuid(UUID.randomUUID().toString());
+        Application application = (Application) SpringUtils.getApplicationContext().getBean(RpcPojo.application.name());
+        request.setClientApplicationName(application.getName());
+        request.setClientIp(InetAddress.getLocalHost().getHostAddress());
+
+        // 必要参数
+        request.setClassName(refrence.getName());
+        request.setMethodName(method.getName());
+        request.setTypes(getTypes(method));
+        request.setArgs(args);
 
         // 发送请求
         channelFuture.channel().writeAndFlush(request).sync();
@@ -91,9 +129,22 @@ public class RpcClient {
 
         // 接收响应
         RpcResponse response = handler.getResponse();
-
-        logger.info(response);
+        logger.info("服务端响应：" + response);
 
         return response.getResult();
+    }
+
+    /**
+     * 获取方法的参数类型
+     *
+     * @param method
+     * @return
+     */
+    private String[] getTypes(Method method) {
+        String[] types = new String[method.getParameterTypes().length];
+        for (int i = 0; i < method.getParameterTypes().length; i++) {
+            types[i] = method.getParameterTypes()[i].getName();
+        }
+        return types;
     }
 }

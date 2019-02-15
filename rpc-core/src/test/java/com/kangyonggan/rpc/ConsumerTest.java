@@ -32,7 +32,8 @@ public class ConsumerTest {
     @Test
     public void testPublishService() throws IOException {
         MathService mathService = (MathService) context.getBean("mathService");
-        logger.info("调用远程服务，1 + 2 = " + mathService.add(1, 2));
+        int result = mathService.add(1, 2);
+        logger.info("调用远程服务，1 + 2 = " + result);
         System.in.read();
     }
 
