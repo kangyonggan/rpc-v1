@@ -33,6 +33,10 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
 
     private String ref;
 
+    private String ip;
+
+    private int port;
+
     /**
      * 在spring实例化全部的bean之后执行
      *
@@ -77,6 +81,10 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
         Register register = (Register) SpringUtils.getApplicationContext().getBean(RpcPojo.register.name());
         Server server = (Server) applicationContext.getBean(RpcPojo.server.name());
 
+        // 设置服务端ip和port，以便给client端直接调用。
+        this.setIp(InetAddress.getLocalHost().getHostAddress());
+        this.setPort(server.getPort());
+
         if (RegisterType.zookeeper.name().equals(register.getType())) {
             // zookeeper
             String basePath = "/rpc/" + this.getName() + "/provider";
@@ -90,6 +98,17 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
             // 服务(数据)不永久保存，当与zookeeper断开连接20s左右自动删除
             client.saveNode(path, this);
         }
+    }
 
+    @Override
+    public String toString() {
+        return "Service{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", impl='" + impl + '\'' +
+                ", ref='" + ref + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                '}';
     }
 }

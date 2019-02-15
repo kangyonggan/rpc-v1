@@ -12,6 +12,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.log4j.Logger;
 
 /**
+ * 服务端
+ *
  * @author kangyonggan
  * @since 2019-02-14
  */

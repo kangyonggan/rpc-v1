@@ -2,6 +2,7 @@ package com.kangyonggan.rpc.pojo;
 
 import com.kangyonggan.rpc.constants.RegisterType;
 import com.kangyonggan.rpc.constants.RpcPojo;
+import com.kangyonggan.rpc.handler.ServiceHandler;
 import com.kangyonggan.rpc.util.SpringUtils;
 import com.kangyonggan.rpc.util.ZookeeperClient;
 import lombok.Data;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class Refrence implements InitializingBean, ApplicationContextAware, Fact
     private String id;
 
     private String name;
+
+    private List<Service> services;
 
     /**
      * 获取spring上下文对象
@@ -74,7 +78,7 @@ public class Refrence implements InitializingBean, ApplicationContextAware, Fact
         String path = "/rpc/" + name + "/provider";
         logger.info("正在获取引用服务:[" + path + "]");
         Register register = (Register) SpringUtils.getApplicationContext().getBean(RpcPojo.register.name());
-        List<Service> services = new ArrayList<>();
+        services = new ArrayList<>();
 
         if (RegisterType.zookeeper.name().equals(register.getType())) {
             ZookeeperClient zookeeperClient = ZookeeperClient.getInstance(register.getIp(), register.getPort());
@@ -90,8 +94,9 @@ public class Refrence implements InitializingBean, ApplicationContextAware, Fact
 
     @Override
     public Object getObject() throws Exception {
-        logger.info("getObject");
-        return null;
+        Class<?> clazz = getObjectType();
+        // 动态代理，获取远程服务实例
+        return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new ServiceHandler(this));
     }
 
     @Override
@@ -107,5 +112,14 @@ public class Refrence implements InitializingBean, ApplicationContextAware, Fact
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Refrence{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", services=" + services +
+                '}';
     }
 }
