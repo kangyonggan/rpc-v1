@@ -27,6 +27,8 @@
         <xsd:complexType>
             <!-- 客户端ID -->
             <xsd:attribute name="id" type="xsd:string" fixed="client"/>
+            <!-- 负载均衡 -->
+            <xsd:attribute name="load_balance" type="xsd:string" default="poll" />
         </xsd:complexType>
     </xsd:element>
 

@@ -1,10 +1,10 @@
 package com.kangyonggan.rpc.core;
 
+import com.kangyonggan.rpc.constants.LoadBalanceStrategy;
 import com.kangyonggan.rpc.constants.RpcPojo;
+import com.kangyonggan.rpc.handler.LoadBalanceHandler;
 import com.kangyonggan.rpc.handler.RpcClientHandler;
-import com.kangyonggan.rpc.pojo.Application;
-import com.kangyonggan.rpc.pojo.Refrence;
-import com.kangyonggan.rpc.pojo.Service;
+import com.kangyonggan.rpc.pojo.*;
 import com.kangyonggan.rpc.util.SpringUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -94,9 +93,18 @@ public class RpcClient {
             throw new RuntimeException("没有可用的服务");
         }
 
-        // 暂时只实现随机算法
-        int random = new Random().nextInt(refrence.getServices().size());
-        return refrence.getServices().get(random);
+        Client client = (Client) SpringUtils.getApplicationContext().getBean(RpcPojo.client.name());
+        logger.info("客户端负载均衡策略：" + client.getLoadBalance());
+
+        if (client.getLoadBalance().equals(LoadBalanceStrategy.RANDOM.getName())) {
+            // 随机
+            return LoadBalanceHandler.getRandomService(refrence.getServices());
+        } else if (client.getLoadBalance().equals(LoadBalanceStrategy.POLL.getName())) {
+            // 轮询
+            return LoadBalanceHandler.getPollService(refrence.getServices(), LoadBalanceHandler.incInvokeTimes(refrence.getName()));
+        }
+
+        throw new RuntimeException("不支持的负载均衡策略");
     }
 
     /**
