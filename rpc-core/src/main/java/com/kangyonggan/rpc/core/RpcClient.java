@@ -10,6 +10,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 
@@ -51,6 +53,9 @@ public class RpcClient {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
+                // 解码
+                ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
+
                 // 编码
                 ch.pipeline().addLast(new ObjectEncoder());
 
@@ -85,10 +90,10 @@ public class RpcClient {
         channelFuture.channel().closeFuture().sync();
 
         // 接收响应
-        Object response = handler.getResponse();
+        RpcResponse response = handler.getResponse();
 
         logger.info(response);
 
-        return null;
+        return response.getResult();
     }
 }

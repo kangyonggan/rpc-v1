@@ -1,5 +1,6 @@
 package com.kangyonggan.rpc.handler;
 
+import com.kangyonggan.rpc.core.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.Data;
@@ -11,10 +12,17 @@ import lombok.Data;
 @Data
 public class RpcClientHandler extends ChannelInboundHandlerAdapter {
 
-    private Object response;
+    private RpcResponse response;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        this.response = msg;
+        this.response = (RpcResponse) msg;
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        // 每次用完要关闭，不然拿不到response，我也不知道为啥（目测得了解netty才行）
+        ctx.flush();
+        ctx.close();
     }
 }
