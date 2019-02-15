@@ -7,7 +7,7 @@ package com.kangyonggan.rpc.service;
 public interface MathService {
 
     /**
-     * 加
+     * 加法
      *
      * @param x
      * @param y

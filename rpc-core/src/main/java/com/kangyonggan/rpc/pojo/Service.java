@@ -1,7 +1,9 @@
 package com.kangyonggan.rpc.pojo;
 
+import com.kangyonggan.rpc.constants.RegisterType;
 import com.kangyonggan.rpc.constants.RpcPojo;
-import com.kangyonggan.rpc.util.RegisterUtils;
+import com.kangyonggan.rpc.util.SpringUtils;
+import com.kangyonggan.rpc.util.ZookeeperClient;
 import lombok.Data;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -68,7 +70,7 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
         this.setPort(server.getPort());
 
         // 发布服务到注册中心
-        RegisterUtils.registerService(this);
+        registerService();
     }
 
     /**
@@ -80,5 +82,27 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    /**
+     * 发布服务到注册中心
+     */
+    private void registerService() {
+        Register register = (Register) SpringUtils.getApplicationContext().getBean(RpcPojo.register.name());
+
+        if (RegisterType.zookeeper.name().equals(register.getType())) {
+            // zookeeper
+            String basePath = "/rpc/" + this.getName() + "/provider";
+            String path = basePath + "/" + this.getIp() + "_" + this.getPort();
+
+            ZookeeperClient client = ZookeeperClient.getInstance(register.getIp(), register.getPort());
+
+            // 应用（路径）永久保存
+            client.createPath(basePath);
+
+            // 服务(数据)不永久保存，当与zookeeper断开连接20s左右自动删除
+            client.saveNode(path, this);
+        }
+
     }
 }
