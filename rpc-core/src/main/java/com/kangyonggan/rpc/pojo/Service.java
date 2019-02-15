@@ -19,9 +19,9 @@ import java.net.InetAddress;
 @Data
 public class Service implements InitializingBean, ApplicationContextAware, Serializable {
 
-    private Logger logger = Logger.getLogger(Service.class);
+    private transient Logger logger = Logger.getLogger(Service.class);
 
-    private ApplicationContext applicationContext;
+    private transient ApplicationContext applicationContext;
 
     private String id;
 
