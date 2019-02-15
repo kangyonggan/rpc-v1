@@ -24,6 +24,16 @@ public enum RpcPojo {
     /**
      * 提供服务
      */
-    service
+    service,
+
+    /**
+     * 客户端
+     */
+    client,
+
+    /**
+     * 引用
+     */
+    refrence
 
 }
