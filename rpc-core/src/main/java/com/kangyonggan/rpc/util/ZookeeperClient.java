@@ -4,6 +4,10 @@ import com.kangyonggan.rpc.RpcServer;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.data.Stat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kangyonggan
@@ -93,5 +97,31 @@ public final class ZookeeperClient {
             }
             zkClient.writeData(path, data);
         }
+    }
+
+    /**
+     * 获取子节点
+     *
+     * @param path
+     * @return
+     */
+    public List<String> getChildNodes(String path) {
+        if (!exists(path)) {
+            return new ArrayList<>();
+        }
+        return zkClient.getChildren(path);
+    }
+
+    /**
+     * 获取节点
+     *
+     * @param path
+     * @return
+     */
+    public Object getNode(String path) {
+        if (!exists(path)) {
+            return null;
+        }
+        return zkClient.readData(path, new Stat());
     }
 }
