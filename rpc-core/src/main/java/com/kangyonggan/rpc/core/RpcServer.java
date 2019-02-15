@@ -1,4 +1,4 @@
-package com.kangyonggan.rpc;
+package com.kangyonggan.rpc.core;
 
 import com.kangyonggan.rpc.handler.RpcServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,6 +9,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
 import org.apache.log4j.Logger;
 
 /**
@@ -43,7 +45,9 @@ public class RpcServer extends Thread {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
-                            // 自定义处理器
+                            // 解码
+                            ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
+                            // 收发消息
                             ch.pipeline().addLast(new RpcServerHandler());
                         }
                     }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);

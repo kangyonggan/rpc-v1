@@ -1,6 +1,6 @@
 package com.kangyonggan.rpc.pojo;
 
-import com.kangyonggan.rpc.RpcServer;
+import com.kangyonggan.rpc.core.RpcServer;
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 

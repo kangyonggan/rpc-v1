@@ -1,6 +1,6 @@
 package com.kangyonggan.rpc.util;
 
-import com.kangyonggan.rpc.RpcServer;
+import com.kangyonggan.rpc.core.RpcServer;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;

@@ -1,10 +1,9 @@
 package com.kangyonggan.rpc.handler;
 
-import io.netty.buffer.ByteBuf;
+import com.kangyonggan.rpc.core.RpcRequest;
+import com.kangyonggan.rpc.core.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.CharsetUtil;
-import io.netty.util.ReferenceCountUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -17,14 +16,23 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        logger.info("RPC服务端收到消息");
-
+        RpcResponse response = new RpcResponse();
         try {
-            ByteBuf in = (ByteBuf) msg;
-            logger.info(in.toString(CharsetUtil.UTF_8));
-        } finally {
-            // 丢弃接收到的数据
-            ReferenceCountUtil.release(msg);
+            RpcRequest rpcRequest = (RpcRequest) msg;
+            logger.info("RPC服务端收到消息:" + rpcRequest);
+
+            // 获取本地服务，反射获取返回值
+            response.setIsSuccess(true);
+            response.setResult(3);
+        } catch (Exception e) {
+            logger.error("服务端接收消息发送异常", e);
+            response.setIsSuccess(false);
+            response.setThrowable(e);
         }
+
+        // 写响应
+        logger.info("服务端响应内容:" + response);
+        ctx.write(response);
+        ctx.flush();
     }
 }

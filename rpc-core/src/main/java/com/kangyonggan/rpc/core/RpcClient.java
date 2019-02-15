@@ -1,4 +1,4 @@
-package com.kangyonggan.rpc;
+package com.kangyonggan.rpc.core;
 
 import com.kangyonggan.rpc.handler.RpcClientHandler;
 import com.kangyonggan.rpc.pojo.Refrence;
@@ -10,7 +10,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
+
+import java.util.UUID;
 
 /**
  * 客户端
@@ -37,7 +40,7 @@ public class RpcClient {
      * 连接远程服务
      */
     private void connectRemoteService() {
-        logger.info("正在连接服务端的引用:" + refrence);
+        logger.info("正在连接远程服务端:" + refrence);
         // 客户端线程
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
@@ -48,7 +51,10 @@ public class RpcClient {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                // 自定义处理器
+                // 编码
+                ch.pipeline().addLast(new ObjectEncoder());
+
+                // 收发消息
                 handler = new RpcClientHandler();
                 ch.pipeline().addLast(handler);
             }
@@ -57,15 +63,25 @@ public class RpcClient {
         try {
             channelFuture = bootstrap.connect("127.0.0.1", 9203).sync();
 
-            logger.info("连接服务端引用成功:" + refrence);
+            logger.info("连接远程服务端成功:" + refrence);
         } catch (Exception e) {
-            logger.error("连接服务端引用异常", e);
+            logger.error("连接远程服务端异常", e);
         }
     }
 
+    /**
+     * 发送消息
+     *
+     * @return
+     * @throws Exception
+     */
     public Object send() throws Exception {
+        // 请求参数
+        RpcRequest request = new RpcRequest();
+        request.setUuid(UUID.randomUUID().toString());
+
         // 发送请求
-        channelFuture.channel().writeAndFlush("test".getBytes()).sync();
+        channelFuture.channel().writeAndFlush(request).sync();
         channelFuture.channel().closeFuture().sync();
 
         // 接收响应
