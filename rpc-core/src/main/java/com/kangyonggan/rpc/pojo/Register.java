@@ -17,8 +17,4 @@ public class Register {
 
     private String port;
 
-    private String username;
-
-    private String password;
-
 }

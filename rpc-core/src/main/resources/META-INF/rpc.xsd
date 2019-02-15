@@ -22,6 +22,14 @@
         </xsd:complexType>
     </xsd:element>
 
+    <!-- 客户端 -->
+    <xsd:element name="client">
+        <xsd:complexType>
+            <!-- 客户端ID -->
+            <xsd:attribute name="id" type="xsd:string" fixed="client"/>
+        </xsd:complexType>
+    </xsd:element>
+
     <!-- 注册中心 -->
     <xsd:element name="register">
         <xsd:complexType>
@@ -33,10 +41,6 @@
             <xsd:attribute name="ip" type="xsd:string"/>
             <!-- 端口 -->
             <xsd:attribute name="port" type="xsd:string"/>
-            <!-- 用户名 -->
-            <xsd:attribute name="username" type="xsd:string"/>
-            <!-- 密码 -->
-            <xsd:attribute name="password" type="xsd:string"/>
         </xsd:complexType>
     </xsd:element>
 
@@ -51,17 +55,16 @@
             <xsd:attribute name="impl" type="xsd:string"/>
             <!-- 服务实现相关类 -->
             <xsd:attribute name="ref" type="xsd:string"/>
-            <!-- 版本 -->
-            <xsd:attribute name="version" type="xsd:string"/>
-            <!-- 权重 -->
-            <xsd:attribute name="weight" default="5">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:integer">
-                        <xsd:minInclusive value="0"/>
-                        <xsd:maxInclusive value="10"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- 引用 -->
+    <xsd:element name="refrence">
+        <xsd:complexType>
+            <!-- ID -->
+            <xsd:attribute name="id" type="xsd:string" use="required"/>
+            <!-- 服务接口名称 -->
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>

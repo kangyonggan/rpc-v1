@@ -1,6 +1,5 @@
 package com.kangyonggan.rpc;
 
-import com.kangyonggan.rpc.service.MathService;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +30,6 @@ public class PublishServiceTest {
      */
     @Test
     public void testPublishService() throws IOException {
-        MathService mathService = context.getBean(MathService.class);
-        logger.info("本地访问服务：" + mathService.add(1, 3));
-
         System.in.read();
     }
 

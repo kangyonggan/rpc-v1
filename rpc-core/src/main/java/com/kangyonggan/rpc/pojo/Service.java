@@ -33,16 +33,6 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
 
     private String ref;
 
-    private String version;
-
-    private int weight;
-
-    private String applicationName;
-
-    private String ip;
-
-    private int port;
-
     /**
      * 在spring实例化全部的bean之后执行
      *
@@ -63,12 +53,6 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
             return;
         }
 
-        Application application = (Application) applicationContext.getBean(RpcPojo.application.name());
-        Server server = (Server) applicationContext.getBean(RpcPojo.server.name());
-        this.setApplicationName(application.getName());
-        this.setIp(InetAddress.getLocalHost().getHostAddress());
-        this.setPort(server.getPort());
-
         // 发布服务到注册中心
         registerService();
     }
@@ -86,14 +70,17 @@ public class Service implements InitializingBean, ApplicationContextAware, Seria
 
     /**
      * 发布服务到注册中心
+     *
+     * @throws Exception
      */
-    private void registerService() {
+    private void registerService() throws Exception {
         Register register = (Register) SpringUtils.getApplicationContext().getBean(RpcPojo.register.name());
+        Server server = (Server) applicationContext.getBean(RpcPojo.server.name());
 
         if (RegisterType.zookeeper.name().equals(register.getType())) {
             // zookeeper
             String basePath = "/rpc/" + this.getName() + "/provider";
-            String path = basePath + "/" + this.getIp() + "_" + this.getPort();
+            String path = basePath + "/" + InetAddress.getLocalHost().getHostAddress() + "_" + server.getPort();
 
             ZookeeperClient client = ZookeeperClient.getInstance(register.getIp(), register.getPort());
 
