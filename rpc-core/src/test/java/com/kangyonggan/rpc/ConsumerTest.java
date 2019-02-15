@@ -25,7 +25,7 @@ public class ConsumerTest {
     }
 
     /**
-     * 引用服务
+     * 远程调用
      *
      * @throws IOException
      */
