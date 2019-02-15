@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 服务引用
+ *
  * @author kangyonggan
  * @since 2019-02-15
  */
