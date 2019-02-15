@@ -78,7 +78,7 @@ public class RpcClient {
 
             logger.info("连接远程服务端成功:" + service);
         } catch (Exception e) {
-            logger.error("连接远程服务端异常", e);
+            throw new RuntimeException(e);
         }
     }
 
