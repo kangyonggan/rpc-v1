@@ -1,6 +1,7 @@
 package com.kangyonggan.rpc;
 
 import com.kangyonggan.rpc.service.MathService;
+import com.kangyonggan.rpc.service.UserService;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,10 @@ public class ConsumerTest {
         MathService mathService = (MathService) context.getBean("mathService");
         int result = mathService.add(1, 2);
         logger.info("调用远程服务，1 + 2 = " + result);
+
+        UserService userService = (UserService) context.getBean("userService");
+        boolean exists = userService.exists("rpc");
+        logger.info("调用远程服务，是否存在用户rpc = " + exists);
         System.in.read();
     }
 

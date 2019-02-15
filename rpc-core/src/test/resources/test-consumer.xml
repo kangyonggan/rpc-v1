@@ -17,4 +17,5 @@
 
     <!-- 引用服务 -->
     <rpc:refrence id="mathService" name="com.kangyonggan.rpc.service.MathService"/>
+    <rpc:refrence id="userService" name="com.kangyonggan.rpc.service.UserService"/>
 </beans>

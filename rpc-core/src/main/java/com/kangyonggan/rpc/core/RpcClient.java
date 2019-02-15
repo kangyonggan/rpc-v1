@@ -105,9 +105,9 @@ public class RpcClient {
      * @param method
      * @param args
      * @return
-     * @throws Exception
+     * @throws Throwable
      */
-    public Object send(Method method, Object[] args) throws Exception {
+    public Object send(Method method, Object[] args) throws Throwable {
         // 准备请求参数
         RpcRequest request = new RpcRequest();
 
@@ -131,7 +131,11 @@ public class RpcClient {
         RpcResponse response = handler.getResponse();
         logger.info("服务端响应：" + response);
 
-        return response.getResult();
+        if (response.getIsSuccess()) {
+            return response.getResult();
+        }
+
+        throw response.getThrowable();
     }
 
     /**
